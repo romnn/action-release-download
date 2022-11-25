@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "umd",
+        "declaration": true,
+        "declarationMap": true,
+        "outDir": "./dist",
+        "esModuleInterop": true,
+        "skipLibCheck": true
+    },
+    "include": [
+        "src/**/*"
+    ]
+}
