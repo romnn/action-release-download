@@ -6,6 +6,7 @@
     "description": "Download and cache github action release binaries",
     "scripts": {
         "build": "tsc",
+        "check": "tsc --noEmit",
         "format": "prettier --write",
         "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
         "test": "jest",
@@ -18,7 +19,10 @@
     ],
     "dependencies": {
         "@actions/cache": "^3.0.6",
-        "@actions/tool-cache": "^2.0.1"
+        "@actions/tool-cache": "^2.0.1",
+        "@octokit/core": "^4.1.0",
+        "@types/node": "^18.11.9",
+        "toml": "^3.0.0"
     },
     "devDependencies": {
         "@types/jest": "^29.2.3",
