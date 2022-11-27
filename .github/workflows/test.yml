@@ -23,3 +23,7 @@ jobs:
       - run: yarn install --immutable
       - run: yarn run build
       - run: yarn run test
+
+      - name: Test example
+        run: |
+          cd examples/ && yarn install --dev && yarn run run

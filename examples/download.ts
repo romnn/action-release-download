@@ -2,11 +2,8 @@ import * as core from "@actions/core";
 import * as exec from "@actions/exec";
 import {Repo, RustTarget} from "action-release-download";
 
-// const { GITHUB_REPOSITORYRUNNER_TEMP } = process.env;
-
 async function run(): Promise<void> {
   const version: string = "";
-  // const repo = {owner : "romnn", repo : "ldap-manager"};
 
   // const token: string = process.env.GITHUB_TOKEN ?? "";
   // console.log(token)
@@ -15,7 +12,7 @@ async function run(): Promise<void> {
   //                                          : await releases.tagged(version);
 
   // const releass = new Releases(); // {token});
-  const repo = new Repo();
+  const repo = new Repo({repo : "romnn/ldap-manager"});
   const release = (version === "") ? await repo.getLatestRelease()
                                    : await repo.getReleaseByTag(version);
   console.log(release);
