@@ -199,7 +199,7 @@ export class Repo {
 
   constructor({ repo, token }: { repo?: string; token?: string } = {}) {
     if (!repo || repo === "") {
-      repo = process.env.GITHUB_REPOSITORY;
+      repo = process.env.GITHUB_ACTION_REPOSITORY;
     }
     if (!repo || repo === "") {
       throw new Error("repository not specified");

@@ -4,7 +4,7 @@ import { Repo, RustTarget } from "action-get-release";
 import * as path from "path";
 
 async function run(): Promise<void> {
-  const version = "v0.0.1";
+  const version: string = "v0.0.1";
   const dest = path.resolve(__dirname, "tmp");
 
   const repo = new Repo({ repo: "romnn/publish-crates" });
