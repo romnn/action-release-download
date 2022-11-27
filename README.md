@@ -2,10 +2,16 @@
 
 #### TODO (v1)
 
-- extract zip function
-- extract tar function
-- query for the latest release of a github repo using the api
+- write a little readme
+- tests for parsing github versions
+
+#### Done
+- replace console log stuff with actions core
+- publish on npm!
+- check the input parameters if they are empty
+- lint the code
 - get list of assets from a github repo using the api
+- query for the latest release of a github repo using the api
 
 #### Development sanity
 ```bash

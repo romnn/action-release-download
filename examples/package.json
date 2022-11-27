@@ -5,7 +5,10 @@
     "description": "usage example for downloading github releases",
     "license": "MIT",
     "scripts": {
-        "run": "ts-node download.ts"
+        "run": "ts-node download.ts",
+        "check": "tsc --noEmit",
+        "format": "prettier --write",
+        "lint": "eslint . --ext .js,.cjs,.ts,.cts, --fix"
     },
     "dependencies": {
         "action-release-download": "file:../"
