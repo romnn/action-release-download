@@ -8,6 +8,7 @@
         "run": "ts-node download.ts"
     },
     "dependencies": {
+        "action-release-download": "file:../"
     },
     "devDependencies": {
         "@types/node": "^18.11.9",
