@@ -1,16 +1,18 @@
-import {promises as fs} from "fs";
-import path from 'path';
-import tmp from 'tmp';
+import { promises as fs } from "fs";
+import path from "path";
+import tmp from "tmp";
 
-import {parseCargoPackageManifest} from "../src/rust";
+import { parseCargoPackageManifest } from "../src/rust";
 
-describe('rust', () => {
+describe("rust", () => {
   let tmpDir: tmp.DirResult;
 
-  beforeEach(() => { tmpDir = tmp.dirSync({unsafeCleanup : true}); });
+  beforeEach(() => {
+    tmpDir = tmp.dirSync({ unsafeCleanup: true });
+  });
   afterEach(() => tmpDir.removeCallback());
 
-  it('parses a cargo manifest', async () => {
+  it("parses a cargo manifest", async () => {
     const manifestPath = path.join(tmpDir.name, "Cargo.toml");
     const manifestContent = `
 [package]
@@ -26,23 +28,19 @@ repository = "https://github.com/romnn/film-borders"
        `;
     console.log(manifestContent);
     await fs.writeFile(manifestPath, manifestContent, {
-      flag : 'w',
+      flag: "w",
     });
     const manifest = await parseCargoPackageManifest(manifestPath);
-    const {
-      name,
-      repository,
-      version,
-    } = manifest.package;
+    const { name, repository, version } = manifest.package;
 
     expect({
       name,
       repository,
       version,
     }).toEqual({
-      name : "filmborders",
-      repository : "https://github.com/romnn/film-borders",
-      version : "0.0.32",
+      name: "filmborders",
+      repository: "https://github.com/romnn/film-borders",
+      version: "0.0.32",
     });
   });
-})
+});
