@@ -6,8 +6,4 @@ echo "$DIR"
 rm -rf "$DIR/tmp"
 mkdir "$DIR/tmp"
 
-env \
-  GITHUB_REPOSITORY=romnn/publish-crates \
-  GITHUB_ACTION_REPOSITORY=romnn/publish-crates \
-  RUNNER_TEMP=./tmp \
-  yarn run run
+yarn run run

@@ -105,45 +105,47 @@ export class Release {
     return downloaded;
   }
 
-  async downloadAsset(name: string, {cache, cacheToolKey}: {
+  async downloadAsset(name: string, {dest, cache, cacheToolKey, unarchive}: {
+    dest?: string,
     cache?: boolean,
     cacheToolKey?: string
+    unarchive?: boolean
   } = {}): Promise<string> {
-    if (!cacheToolKey || cacheToolKey === "") {
-      cacheToolKey = process.env.GITHUB_ACTION_REPOSITORY;
-    }
-    if (!cacheToolKey || cacheToolKey === "") {
-      throw new Error(
-          `cannot determine key for the cache. The GITHUB_ACTION_REPOSITORY env variable is not defined and cacheToolKey is not set.`);
-    }
-
-    core.info(`downloading asset with name ${name}`);
-
-    const releaseKey = this.id();
-    const useCache = cache ?? true;
-
-    const asset = this.assets().find((asset) => asset.name() === name);
-    if (!asset) {
-      const releaseName = `${this.repo.fullName()}/${this.tag()}`;
-      core.error(`release ${releaseName} has no asset ${name}`);
-      core.error(`available assets: ${JSON.stringify(this.assets())}`);
-      throw new Error(`release ${releaseName} has no asset ${name}`);
-    }
-
-    const assetKey = asset.id();
-    let downloaded: string|undefined = undefined;
-    if (useCache) {
-      downloaded = tc.find(cacheToolKey, releaseKey, assetKey);
-    }
-    if (!downloaded) {
-      downloaded = await this.download(asset);
-      if (useCache) {
-        downloaded =
-            await tc.cacheDir(downloaded, cacheToolKey, releaseKey, assetKey);
+      if (!cacheToolKey || cacheToolKey === "") {
+        cacheToolKey = process.env.GITHUB_ACTION_REPOSITORY;
       }
+      if (!cacheToolKey || cacheToolKey === "") {
+        throw new Error(
+            `cannot determine key for the cache. The GITHUB_ACTION_REPOSITORY env variable is not defined and cacheToolKey is not set.`);
+      }
+
+      core.info(`downloading asset with name ${name}`);
+
+      const releaseKey = this.id();
+      const useCache = cache ?? true;
+
+      const asset = this.assets().find((asset) => asset.name() === name);
+      if (!asset) {
+        const releaseName = `${this.repo.fullName()}/${this.tag()}`;
+        core.error(`release ${releaseName} has no asset ${name}`);
+        core.error(`available assets: ${JSON.stringify(this.assets())}`);
+        throw new Error(`release ${releaseName} has no asset ${name}`);
+      }
+
+      const assetKey = asset.id();
+      let downloaded: string|undefined = undefined;
+      if (useCache) {
+        downloaded = tc.find(cacheToolKey, releaseKey, assetKey);
+      }
+      if (!downloaded) {
+        downloaded = await this.download(asset, {dest, unarchive});
+        if (useCache) {
+          downloaded =
+              await tc.cacheDir(downloaded, cacheToolKey, releaseKey, assetKey);
+        }
+      }
+      return downloaded;
     }
-    return downloaded;
-  }
 }
 
 export class Repo {

@@ -11,7 +11,7 @@
         "lint": "eslint . --ext .js,.cjs,.ts,.cts, --fix"
     },
     "dependencies": {
-        "action-release-download": "file:../"
+        "action-get-release": "file:../"
     },
     "devDependencies": {
         "@types/node": "^18.11.9",

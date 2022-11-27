@@ -25,10 +25,6 @@ jobs:
       - run: yarn run test
 
       - name: Test example
-        env:
-          GITHUB_REPOSITORY: romnn/ldap-manager
-          GITHUB_ACTION_REPOSITORY: romnn/publish-crates
-          RUNNER_TEMP: ./tmp
         run: |
           cd examples/
           mkdir ./tmp

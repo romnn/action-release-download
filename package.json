@@ -1,6 +1,6 @@
 {
-    "name": "action-release-download",
-    "version": "0.0.0",
+    "name": "action-get-release",
+    "version": "0.0.1",
     "author": "romnn <contact@romnn.com>",
     "license": "MIT",
     "description": "Download and cache github action release binaries",

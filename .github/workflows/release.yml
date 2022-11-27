@@ -23,7 +23,6 @@ jobs:
           --no-git-tag-version ${{ steps.query.outputs.stable_semver_version }}
       - run: yarn install --immutable
       - run: yarn run build
-      - run: npm publish --access public
+      - run: yarn publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
