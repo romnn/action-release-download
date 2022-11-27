@@ -21,10 +21,11 @@ export interface GitHubRepositoryName {
 }
 
 export function parseGithubRepo(repo: string): GitHubRepositoryName {
-  const match = repo.match(/(?:github\.com\/)?([a-z]+)\/([a-z-_]+)(?:\/.*)?/);
-  if (!match || match.length != 3)
+  const match = repo.match(/([a-z-_]+)(?<!(github\.com))\/([a-z-_]+)(?:\/.*)?/);
+
+  if (!match || match.length < 4)
     throw new Error(`failed to parse github repository ${repo}`);
-  return { owner: match[1], repo: match[2] }
+  return { owner: match[1], repo: match[3] }
 }
 
 async function dirExists(path: string): Promise<boolean> {

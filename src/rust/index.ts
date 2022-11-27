@@ -3,21 +3,10 @@ import * as toml from 'toml';
 
 import {Architecture, Platform} from "../index";
 
-export interface CargoPackageManifest {
-  name: string;
-  repository: string;
-  version: string;
-}
-
-export async function getCargoPackageManifest(path: string):
-    Promise<CargoPackageManifest> {
-  const manifest = toml.parse(await fs.readFile(path, "binary").toString());
-  const {
-    name,
-    repository,
-    version,
-  } = manifest.package;
-  return { name, repository, version, }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function parseCargoPackageManifest(path: string): Promise<any> {
+  const content = await fs.readFile(path, "binary")
+  return toml.parse(content.toString());
 }
 
 export class RustTarget {
@@ -51,10 +40,7 @@ export function toRustPlatform(platform: Platform): string|undefined {
     return "freebsd";
   case "netbsd":
     return "netbsd";
-    // default:
-    // case "aix":
-    // case "openbsd":
-    // case "sunos":
+  default:
     return undefined;
   }
 }
