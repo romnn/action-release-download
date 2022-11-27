@@ -26,7 +26,6 @@ readme = "README.md"
 homepage = "https://film-borders.romnn.com"
 repository = "https://github.com/romnn/film-borders"
        `;
-    console.log(manifestContent);
     await fs.writeFile(manifestPath, manifestContent, {
       flag: "w",
     });
