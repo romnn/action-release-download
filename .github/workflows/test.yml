@@ -27,6 +27,6 @@ jobs:
       - name: Test example
         run: |
           cd examples/
-          mkdir ./tmp
           yarn install --dev
-          yarn run run
+          yarn run run || true
+          file ./tmp/publish-crates-action

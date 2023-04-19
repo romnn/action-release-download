@@ -31,7 +31,7 @@ export function parseGithubRepo(repo: string): GitHubRepositoryName {
 
 async function dirExists(path: string): Promise<boolean> {
   const stat = await fs.lstat(path);
-  return await stat.isDirectory();
+  return stat.isDirectory();
 }
 
 export class Asset {

@@ -5,17 +5,18 @@
   "description": "usage example for downloading github releases",
   "license": "MIT",
   "scripts": {
-    "run": "ts-node download.ts",
+    "run": "rimraf ./tmp && ts-node download.ts",
     "check": "tsc --noEmit",
     "format": "prettier . --write",
     "lint": "eslint . --ext .js,.cjs,.ts,.cts, --fix"
   },
   "dependencies": {
-    "action-get-release": "file:../"
+    "action-get-release": "file:.."
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.3"
+    "rimraf": "^5.0.0",
+    "typescript": "^5.0.4"
   }
 }
