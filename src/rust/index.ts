@@ -2,9 +2,42 @@ import fs, { promises as asyncfs } from "fs";
 import * as toml from "toml";
 
 import { Architecture, Platform } from "../index";
+export interface CargoManifestPackage {
+  name?: string;
+  version?: string;
+  authors?: string;
+  edition?: string;
+  "rust-version"?: string;
+  description?: string;
+  documentation?: string;
+  readme?: string;
+  homepage?: string;
+  repository?: string;
+  license?: string;
+  "license-file"?: string;
+  keywords: string;
+  categories?: string;
+  workspace?: string;
+  build?: string;
+  links?: string;
+  exclude?: string;
+  include?: string;
+  publish?: boolean;
+  metadata?: string;
+  "default-run"?: string;
+  autobins?: string;
+  autoexamples?: string;
+  autotests?: string;
+  autobenches?: string;
+  resolver?: string;
+}
+
+export interface CargoManifest {
+  package?: CargoManifestPackage;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parseCargoPackageManifestSync(path: string): any {
+export function parseCargoPackageManifestSync(path: string): CargoManifest {
   const content = fs.readFileSync(path, "binary");
   return toml.parse(content.toString());
 }
@@ -12,7 +45,7 @@ export function parseCargoPackageManifestSync(path: string): any {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function parseCargoPackageManifestAsync(
   path: string
-): Promise<any> {
+): Promise<CargoManifest> {
   const content = await asyncfs.readFile(path, "binary");
   return toml.parse(content.toString());
 }

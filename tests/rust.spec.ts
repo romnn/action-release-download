@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { promises as fs } from "fs";
+import * as toml from "toml";
 import path from "path";
 import tmp from "tmp";
 
 import {
   parseCargoPackageManifestAsync,
   parseCargoPackageManifestSync,
+  CargoManifest,
 } from "../src/rust";
 
 describe("rust", () => {
@@ -15,7 +18,7 @@ describe("rust", () => {
   });
   afterEach(() => tmpDir.removeCallback());
 
-  it("parses a cargo manifest", async () => {
+  it("parses a cargo manifest file", async () => {
     const manifestPath = path.join(tmpDir.name, "Cargo.toml");
     const manifestContent = `
 [package]
@@ -37,7 +40,7 @@ repository = "https://github.com/romnn/film-borders"
       await parseCargoPackageManifestAsync(manifestPath),
     ];
     for (const manifest of manifests) {
-      const { name, repository, version } = manifest.package;
+      const { name, repository, version } = manifest.package!;
 
       expect({
         name,
@@ -49,5 +52,28 @@ repository = "https://github.com/romnn/film-borders"
         version: "0.0.32",
       });
     }
+  });
+
+  it("parses cargo manifests with dashes", async () => {
+    const manifestContent = `
+[package]
+name = "filmborders"
+version = "0.0.32"
+authors = ["romnn <contact@romnn.com>"]
+edition = "2021"
+license-file = "LICENSE"
+rust-version = "1.68"
+       `;
+    const manifest: CargoManifest = toml.parse(manifestContent);
+    const license_file = manifest.package!["license-file"];
+    const rust_version = manifest.package!["rust-version"];
+
+    expect({
+      license_file,
+      rust_version,
+    }).toEqual({
+      license_file: "LICENSE",
+      rust_version: "1.68",
+    });
   });
 });
