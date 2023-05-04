@@ -2,9 +2,9 @@ import { parseGithubRepo } from "../src/index";
 
 describe("github", () => {
   it("repositories can be parsed", async () => {
-    expect(parseGithubRepo("  https://github.com/some-user/some-repo")).toEqual(
-      { repo: "some-repo", owner: "some-user" }
-    );
+    expect(
+      parseGithubRepo("  https://github.com/some-user/some-repo")
+    ).toEqual({ repo: "some-repo", owner: "some-user" });
     expect(parseGithubRepo("https://github.com/some-user/some-repo")).toEqual({
       repo: "some-repo",
       owner: "some-user",

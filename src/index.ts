@@ -10,11 +10,13 @@ export * from "./rust";
 export type Architecture = typeof process.arch;
 export type Platform = typeof process.platform;
 
-type GitHubRelease =
-  Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"];
+type GitHubRelease = Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"];
 
-type GitHubReleaseAsset =
-  Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"]["data"]["assets"][0];
+type GitHubReleaseAsset = Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"]["data"]["assets"][0];
+
+const ACTION_REPO =
+  process.env.GITHUB_ACTION_REPOSITORY_OVERRIDE ??
+  process.env.GITHUB_ACTION_REPOSITORY;
 
 export interface GitHubRepositoryName {
   repo: string;
@@ -141,7 +143,7 @@ export class Release {
     } = {}
   ): Promise<string> {
     if (!cacheToolKey || cacheToolKey === "") {
-      cacheToolKey = process.env.GITHUB_ACTION_REPOSITORY;
+      cacheToolKey = ACTION_REPO;
     }
     if (!cacheToolKey || cacheToolKey === "") {
       throw new Error(
@@ -200,7 +202,7 @@ export class Repo {
 
   constructor({ repo, token }: { repo?: string; token?: string } = {}) {
     if (!repo || repo === "") {
-      repo = process.env.GITHUB_ACTION_REPOSITORY;
+      repo = ACTION_REPO;
     }
     if (!repo || repo === "") {
       throw new Error("repository not specified");
