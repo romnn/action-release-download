@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: query
-        uses: romnn/query-git-action@master
+        uses: romnn/query-git-action@main
       - uses: actions/setup-node@v3
         with:
           node-version: 18.x
@@ -20,7 +20,7 @@ jobs:
 
       - run: >
           npm version 
-          --no-git-tag-version ${{ steps.query.outputs.stable_semver_version }}
+          --no-git-tag-version ${{ steps.query.outputs.semver_version }}
       - run: yarn install --immutable
       - run: yarn run build
       - run: yarn publish --verbose --access public
