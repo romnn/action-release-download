@@ -7,16 +7,16 @@
   "scripts": {
     "run": "rimraf ./tmp && ts-node download.ts",
     "check": "tsc --noEmit",
-    "format": "prettier . --write",
-    "lint": "eslint . --ext .js,.cjs,.ts,.cts, --fix"
+    "format": "prettier . --write"
   },
   "dependencies": {
     "action-get-release": "file:.."
   },
   "devDependencies": {
-    "@types/node": "^18.11.9",
-    "ts-node": "^10.9.1",
-    "rimraf": "^5.0.0",
-    "typescript": "^5.0.4"
+    "@types/node": "^22.13.10",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
   }
 }
