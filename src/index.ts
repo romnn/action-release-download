@@ -5,14 +5,16 @@ import { Endpoints } from "@octokit/types";
 import { promises as fs } from "fs";
 
 import * as path from "path";
-export * from "./rust";
+export * from "./rust/index.js";
 
 export type Architecture = typeof process.arch;
 export type Platform = typeof process.platform;
 
-type GitHubRelease = Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"];
+type GitHubRelease =
+  Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"];
 
-type GitHubReleaseAsset = Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"]["data"]["assets"][0];
+type GitHubReleaseAsset =
+  Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"]["data"]["assets"][0];
 
 const ACTION_REPO =
   process.env.GITHUB_ACTION_REPOSITORY_OVERRIDE ??
@@ -52,9 +54,8 @@ export class Asset {
   }
 
   id(): string {
-    return `${this.release.repo.fullName()}/asset/${this.asset.id}@${
-      this.asset.updated_at
-    }`;
+    return `${this.release.repo.fullName()}/asset/${this.asset.id}@${this.asset.updated_at
+      }`;
   }
   downloadUrl(): string {
     return this.asset.browser_download_url;
@@ -77,9 +78,8 @@ export class Release {
     return this.release.data.tag_name;
   }
   id(): string {
-    return `${this.repo.fullName()}/${this.release.data.id}@${
-      this.release.data.published_at
-    }`;
+    return `${this.repo.fullName()}/${this.release.data.id}@${this.release.data.published_at
+      }`;
   }
 
   assets(): Asset[] {
@@ -91,7 +91,7 @@ export class Release {
 
   async download(
     asset: Asset,
-    { dest, unarchive }: { dest?: string; unarchive?: boolean } = {}
+    { dest, unarchive }: { dest?: string; unarchive?: boolean } = {},
   ): Promise<string> {
     if (!dest || !(await dirExists(dest))) {
       dest = process.env.RUNNER_TEMP;
@@ -99,13 +99,13 @@ export class Release {
 
     if (!dest || !(await dirExists(dest))) {
       throw new Error(
-        "failed to determine destination path for download: not specified and the RUNNER_TEMP env variable is not defined."
+        "failed to determine destination path for download: not specified and the RUNNER_TEMP env variable is not defined.",
       );
     }
 
     const downloaded = await tc.downloadTool(
       asset.downloadUrl(),
-      path.join(dest, asset.name())
+      path.join(dest, asset.name()),
     );
 
     if (unarchive ?? true) {
@@ -140,14 +140,14 @@ export class Release {
       cache?: boolean;
       cacheToolKey?: string;
       unarchive?: boolean;
-    } = {}
+    } = {},
   ): Promise<string> {
     if (!cacheToolKey || cacheToolKey === "") {
       cacheToolKey = ACTION_REPO;
     }
     if (!cacheToolKey || cacheToolKey === "") {
       throw new Error(
-        `cannot determine key for the cache. The GITHUB_ACTION_REPOSITORY env variable is not defined and cacheToolKey is not set.`
+        `cannot determine key for the cache. The GITHUB_ACTION_REPOSITORY env variable is not defined and cacheToolKey is not set.`,
       );
     }
 
@@ -176,7 +176,7 @@ export class Release {
           downloaded,
           cacheToolKey,
           releaseKey,
-          assetKey
+          assetKey,
         );
       }
     }
@@ -218,7 +218,7 @@ export class Repo {
   async getReleaseByTag(tag: string): Promise<Release> {
     const release = await this.api.request(
       "GET /repos/{owner}/{repo}/releases/tags/{tag}",
-      { tag, ...this.repo }
+      { tag, ...this.repo },
     );
     // console.log(release);
     return new Release({ repo: this, release });
@@ -227,7 +227,7 @@ export class Repo {
   async getLatestRelease(): Promise<Release> {
     const release = await this.api.request(
       "GET /repos/{owner}/{repo}/releases/latest",
-      { ...this.repo }
+      { ...this.repo },
     );
     // console.log(release);
     return new Release({ repo: this, release });

@@ -17,7 +17,7 @@ async function run(): Promise<void> {
   core.debug(
     `found ${
       release.assets().length
-    } assets for ${version} release of ${repo.fullName()}`
+    } assets for ${version} release of ${repo.fullName()}`,
   );
 
   const { platform, arch } = new RustTarget();

@@ -1,7 +1,7 @@
 import fs, { promises as asyncfs } from "fs";
 import * as toml from "toml";
+import type { Architecture, Platform } from "../index.js";
 
-import { Architecture, Platform } from "../index";
 export interface CargoManifestPackage {
   name?: string;
   version?: string;
@@ -36,15 +36,13 @@ export interface CargoManifest {
   package?: CargoManifestPackage;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseCargoPackageManifestSync(path: string): CargoManifest {
   const content = fs.readFileSync(path, "binary");
   return toml.parse(content.toString());
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function parseCargoPackageManifestAsync(
-  path: string
+  path: string,
 ): Promise<CargoManifest> {
   const content = await asyncfs.readFile(path, "binary");
   return toml.parse(content.toString());
@@ -61,7 +59,7 @@ export class RustTarget {
     const rustPlatform = toRustPlatform(platform ?? process.platform);
     if (!rustPlatform)
       throw new Error(
-        `failed to map node platform ${platform} to rust platform`
+        `failed to map node platform ${platform} to rust platform`,
       );
     this.platform = rustPlatform;
     const rustArch = toRustArch(arch ?? process.arch);
