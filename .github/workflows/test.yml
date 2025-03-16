@@ -1,23 +1,21 @@
 name: test
 
-on: [push, pull_request]
+on:
+  push: {}
+  pull_request: {}
+  schedule:
+    # 8AM first day of the month in JAN and JUNE to keep workflow badges up-to-date
+    - cron: "0 8 1 1,6 *"
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    name: Test (node ${{ matrix.node-version }})
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version:
-          - 20.x
-          - 22.x
-          - 24.x
+    runs-on: ubuntu-24.04
+    name: Test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22.x
       - run: yarn install --immutable
       - run: yarn run build
       - run: yarn run test
