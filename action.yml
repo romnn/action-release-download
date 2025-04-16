@@ -11,7 +11,8 @@ inputs:
   repo:
     description: "GitHub repository to download from"
     # default: "${{github.action_repository}}"
-    default: "${{ github.event.repository.name }}"
+    # default: "${{ github.event.repository.name }}"
+    default: "${{ github.repository }}"
   version:
     description: "Release version to install"
     default: "latest"
