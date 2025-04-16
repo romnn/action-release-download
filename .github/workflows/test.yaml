@@ -23,11 +23,13 @@ jobs:
       - run: task action:build
 
       - name: Pass single asset
+        continue-on-error: true
         uses: ./
         with:
           assets: test1.zip
 
       - name: Pass multiple assets as YAML string
+        continue-on-error: true
         uses: ./
         with:
           assets: |

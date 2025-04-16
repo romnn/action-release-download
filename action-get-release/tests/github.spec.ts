@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseGithubRepo } from "../src/index";
+import { parseGithubRepo } from "action-get-release";
 
 describe("github", () => {
   it("repositories can be parsed", async () => {
