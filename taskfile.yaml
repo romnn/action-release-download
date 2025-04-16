@@ -9,7 +9,7 @@ includes:
   action:
     taskfile: "./tasks/node-lib.yaml"
     vars:
-      PACKAGE: "action-release-download-action"
+      PACKAGE: "action-get-release-action"
 tasks:
   install:
     desc: "install dependencies"

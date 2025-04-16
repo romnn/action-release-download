@@ -1,5 +1,5 @@
 {
-  "name": "action-release-download-action",
+  "name": "action-get-release-action",
   "version": "0.0.1",
   "type": "module",
   "author": "romnn <contact@romnn.com>",
@@ -9,8 +9,8 @@
     "build": "rimraf ./dist/ && ncc build ./src/main.ts --minify --out ./dist --target es2020",
     "check": "tsc --noEmit",
     "format": "prettier . --write",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint": "eslint --config eslint.config.mjs",
+    "lint:fix": "eslint --config eslint.config.mjs --fix"
   },
   "dependencies": {
     "@octokit/core": "^6.1.5",

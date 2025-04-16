@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: 22.x
       - run: task install
+      - run: npm install -g turbo
       - run: task action:build
 
       - name: Pass single asset
@@ -45,6 +46,7 @@ jobs:
         with:
           node-version: 22.x
       - run: task install
+      - run: npm install -g turbo
       - run: task test
       # - name: Test example
       #   run: |
