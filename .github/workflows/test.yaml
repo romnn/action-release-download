@@ -23,13 +23,6 @@ jobs:
         with:
           assets: test1.zip
 
-      - name: Pass multiple assets as raw YAML
-        uses: ./action.yaml
-        with:
-          assets:
-            - test1.zip
-            - test2.zip
-
       - name: Pass multiple assets as YAML string
         uses: ./action.yaml
         with:
