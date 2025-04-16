@@ -24,7 +24,7 @@ jobs:
           assets: test1.zip
 
       - name: Pass multiple assets as YAML string
-        uses: ./action.yml
+        uses: ./
         with:
           assets: |
             - test1.zip
@@ -39,7 +39,6 @@ jobs:
         with:
           node-version: 22.x
       - run: yarn install --immutable
-      - run: yarn run build
       - run: yarn run test
       # - name: Test example
       #   run: |

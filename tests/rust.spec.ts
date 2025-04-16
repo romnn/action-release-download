@@ -4,11 +4,7 @@ import * as toml from "toml";
 import path from "path";
 import tmp from "tmp";
 
-import {
-  parseCargoPackageManifestAsync,
-  parseCargoPackageManifestSync,
-  CargoManifest,
-} from "../src/rust";
+import { parseCargoPackageManifestAsync, CargoManifest } from "../src/rust";
 
 describe("rust", () => {
   let tmpDir: tmp.DirResult;
@@ -35,23 +31,18 @@ repository = "https://github.com/romnn/film-borders"
     await fs.writeFile(manifestPath, manifestContent, {
       flag: "w",
     });
-    const manifests = [
-      parseCargoPackageManifestSync(manifestPath),
-      await parseCargoPackageManifestAsync(manifestPath),
-    ];
-    for (const manifest of manifests) {
-      const { name, repository, version } = manifest.package!;
+    const manifest = await parseCargoPackageManifestAsync(manifestPath);
+    const { name, repository, version } = manifest.package!;
 
-      expect({
-        name,
-        repository,
-        version,
-      }).toEqual({
-        name: "filmborders",
-        repository: "https://github.com/romnn/film-borders",
-        version: "0.0.32",
-      });
-    }
+    expect({
+      name,
+      repository,
+      version,
+    }).toEqual({
+      name: "filmborders",
+      repository: "https://github.com/romnn/film-borders",
+      version: "0.0.32",
+    });
   });
 
   it("parses cargo manifests with dashes", async () => {
