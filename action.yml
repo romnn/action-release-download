@@ -10,12 +10,13 @@ inputs:
     required: true
   repo:
     description: "GitHub repository to download from"
+    default: "${{github.action_repository}}"
   version:
     description: "Release version to install"
     default: "latest"
   token:
-    description: Github API token
-    default: ${{ github.token }}
+    description: "Github API token"
+    default: "${{ github.token }}"
     required: false
   github-api-url:
     description: "The URL of the Github API, only use this input if you are using Github Enterprise"
