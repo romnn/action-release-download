@@ -19,7 +19,7 @@ jobs:
       - run: yarn run build:action
 
       - name: Pass single asset
-        uses: ./action.yaml
+        uses: ./
         with:
           assets: test1.zip
 
