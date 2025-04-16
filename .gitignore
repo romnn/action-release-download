@@ -1,5 +1,8 @@
 .DS_Store
+.turbo/
 node_modules/
-build/
-dist/package.json
+deprecated/
+dist
+!/action/dist/index.js
 *.log
+yarn.lock

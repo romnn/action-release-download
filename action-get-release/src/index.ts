@@ -5,7 +5,6 @@ import { Endpoints } from "@octokit/types";
 import { promises as fs } from "fs";
 
 import * as path from "path";
-export * from "./rust/index.js";
 
 export type Architecture = typeof process.arch;
 export type Platform = typeof process.platform;
@@ -54,8 +53,9 @@ export class Asset {
   }
 
   id(): string {
-    return `${this.release.repo.fullName()}/asset/${this.asset.id}@${this.asset.updated_at
-      }`;
+    return `${this.release.repo.fullName()}/asset/${this.asset.id}@${
+      this.asset.updated_at
+    }`;
   }
   downloadUrl(): string {
     return this.asset.browser_download_url;
@@ -78,8 +78,9 @@ export class Release {
     return this.release.data.tag_name;
   }
   id(): string {
-    return `${this.repo.fullName()}/${this.release.data.id}@${this.release.data.published_at
-      }`;
+    return `${this.repo.fullName()}/${this.release.data.id}@${
+      this.release.data.published_at
+    }`;
   }
 
   assets(): Asset[] {

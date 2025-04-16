@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-DIR=$(dirname $(realpath "$0"))
+DIR=$(realpath "$0")
+DIR=$(dirname "${DIR}")
 echo "$DIR"
 
 rm -rf "$DIR/tmp"
 mkdir "$DIR/tmp"
 
-yarn run run
+npm run run

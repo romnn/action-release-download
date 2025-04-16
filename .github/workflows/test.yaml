@@ -12,11 +12,14 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+      - uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
-      - run: yarn install --immutable
-      - run: yarn run build:action
+      - run: task install
+      - run: task action:build
 
       - name: Pass single asset
         uses: ./
@@ -35,11 +38,14 @@ jobs:
     name: Test
     steps:
       - uses: actions/checkout@v4
+      - uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
-      - run: yarn install --immutable
-      - run: yarn run test
+      - run: task install
+      - run: task test
       # - name: Test example
       #   run: |
       #     cd examples/

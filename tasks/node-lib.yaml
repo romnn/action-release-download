@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+tasks:
+  check:
+    desc: "check {{.PACKAGE}}"
+    requires:
+      vars: [PACKAGE]
+    cmds:
+      - turbo run check --filter "{{.PACKAGE}}"
+
+  test:
+    desc: "test {{.PACKAGE}}"
+    requires:
+      vars: [PACKAGE]
+    cmds:
+      - turbo run test --filter "{{.PACKAGE}}"
+
+  lint:
+    desc: "lint {{.PACKAGE}}"
+    requires:
+      vars: [PACKAGE]
+    cmds:
+      - turbo run lint --filter "{{.PACKAGE}}"
+
+  build:
+    desc: "build {{.PACKAGE}}"
+    requires:
+      vars: [PACKAGE]
+    cmds:
+      - turbo run build --filter "{{.PACKAGE}}"
