@@ -1,4 +1,4 @@
-import fs, { promises as asyncfs } from "fs";
+import * as fs from "fs/promises";
 import * as toml from "toml";
 import type { Architecture, Platform } from "../index.js";
 
@@ -36,15 +36,10 @@ export interface CargoManifest {
   package?: CargoManifestPackage;
 }
 
-export function parseCargoPackageManifestSync(path: string): CargoManifest {
-  const content = fs.readFileSync(path, "binary");
-  return toml.parse(content.toString());
-}
-
 export async function parseCargoPackageManifestAsync(
   path: string,
 ): Promise<CargoManifest> {
-  const content = await asyncfs.readFile(path, "binary");
+  const content = await fs.readFile(path, "binary");
   return toml.parse(content.toString());
 }
 

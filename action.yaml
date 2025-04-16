@@ -1,0 +1,61 @@
+name: action release download
+description: Download action release
+author: romnn <contact@romnn.com>
+branding:
+  icon: box
+  color: orange
+inputs:
+  assets:
+    description: "A newline separated list of assets, e.g. "
+    required: true
+  repo:
+    description: "GitHub repository to download from"
+  version:
+    description: "Release version to install"
+    default: "latest"
+  token:
+    description: Github API token
+    default: ${{ github.token }}
+    required: false
+  github-api-url:
+    description: "The URL of the Github API, only use this input if you are using Github Enterprise"
+    default: "https://api.github.com"
+    required: false
+outputs:
+  tag_name:
+    description: "The github tag used to download the release"
+  release_name:
+    description: "The release name / title"
+  downloaded_files:
+    description: "The array of downloaded files, useful when using wildcard '*' to download multiple files."
+runs:
+  using: node20
+  main: dist/index.js
+# runs:
+#   using: "composite"
+#   steps:
+#     - name: Install cargo-hack from crates.io
+#       uses: baptiste0928/cargo-install@v3
+#       with:
+#         crate: cargo-hack
+#         version: "latest"
+# - name: Set Greeting
+#   run: echo "Hello $INPUT_WHO_TO_GREET."
+#   shell: bash
+#   env:
+#     INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
+#
+# - name: Random Number Generator
+#   id: random-number-generator
+#   run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
+#   shell: bash
+#
+# - name: Set GitHub Path
+#   run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+#   shell: bash
+#   env:
+#     GITHUB_ACTION_PATH: ${{ github.action_path }}
+#
+# - name: Run goodbye.sh
+#   run: goodbye.sh
+#   shell: bash

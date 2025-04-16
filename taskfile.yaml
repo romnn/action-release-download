@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+tasks:
+  typos:
+    desc: "check repository for typos"
+    aliases: [spellcheck]
+    cmds:
+      - typos
+
+  check:
+    desc: "check package"
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - yarn run check
+
+  format:
+    desc: "format package"
+    cmds:
+      - yarn run format
+
+  test:
+    desc: "test package"
+    cmds:
+      - yarn run test
+
+  lint:
+    desc: "lint package"
+    cmds:
+      - yarn run lint
+
+  build:action:
+    desc: "build action"
+    aliases: [build]
+    cmds:
+      - yarn run build:action
+
+  build:package:
+    desc: "build package"
+    cmds:
+      - yarn run build:package
+
+  lint:actions:
+    desc: "lint github actions"
+    cmds:
+      - actionlint

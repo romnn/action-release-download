@@ -1,5 +1,16 @@
 ## action-get-release
 
+```bash
+npm install action-get-release
+```
+
+#### Usage in github action
+
+```yaml
+```
+
+#### Usage as a library
+
 #### TODO
 
 - write a little readme

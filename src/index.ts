@@ -200,7 +200,11 @@ export class Repo {
     return this.repo.owner;
   }
 
-  constructor({ repo, token }: { repo?: string; token?: string } = {}) {
+  constructor({
+    repo,
+    token,
+    githubApiBaseUrl,
+  }: { repo?: string; token?: string; githubApiBaseUrl?: string } = {}) {
     if (!repo || repo === "") {
       repo = ACTION_REPO;
     }
@@ -212,7 +216,7 @@ export class Repo {
     if (!token || token === "") {
       token = process.env.GITHUB_TOKEN;
     }
-    this.api = new Octokit({ auth: token });
+    this.api = new Octokit({ auth: token, baseUrl: githubApiBaseUrl });
   }
 
   async getReleaseByTag(tag: string): Promise<Release> {
