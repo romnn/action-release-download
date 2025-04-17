@@ -36,10 +36,20 @@ async function downloadAsset({
     );
   }
 
+  const availableAssetList = release
+    .assets()
+    .map((asset) => ` - ${asset.name()}`)
+    .join("\n");
+
   core.info(
     `found ${
       release.assets().length
     } assets for ${version} release of ${repo.fullName()}`,
+  );
+  core.debug(
+    `found ${
+      release.assets().length
+    } assets for ${version} release of ${repo.fullName()}:\n${availableAssetList}`,
   );
 
   // template the asset name
@@ -69,11 +79,6 @@ async function downloadAsset({
     core.info(`asset[match]=${asset.name()}`);
   }
 
-  const availableAssetList = release
-    .assets()
-    .map((asset) => `- ${asset.name()}`)
-    .join("\n");
-
   const errorContext = `
 Template:
 ${assetTemplate}
@@ -86,14 +91,16 @@ ${availableAssetList}
 `;
 
   if (assets.length < 1) {
-    throw new Error(`did not match any release asset.\n${errorContext}`);
+    core.error(`did not match any release asset.\n${errorContext}`);
+    return;
+    // throw new Error(`did not match any release asset.\n${errorContext}`);
   }
 
   if (assets.length > 1) {
     core.warning(`matched more than one release asset.\n${errorContext}`);
   }
 
-  await download(release, assets[0].name());
+  await Promise.all(assets.map((asset) => download(release, asset.name())));
 }
 
 async function run(): Promise<void> {
@@ -118,4 +125,7 @@ async function run(): Promise<void> {
   ]);
 }
 
-run().catch((error) => core.setFailed(error.message));
+run().catch((error) => {
+  console.log(error);
+  core.setFailed(error.message);
+});
