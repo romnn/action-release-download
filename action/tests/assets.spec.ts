@@ -74,4 +74,28 @@ _
       templateAsset(template, { ...context, platform: "linux", arch: "arm64" }),
     ).toEqual("cargo-fc_12.3_linux_arm64.tar.gz");
   });
+
+  it("can be templated using switch expressions and wildcards", async () => {
+    const rawAssets = `
+- >-
+  cargo-*
+  {{~#switch platform ~}}
+    {{~#case "win32"~}}windows{{~/case~}}
+    {{~#default~}}{{~platform~}}{{~/default~}}
+  {{~/switch~}}
+  _
+  {{~#switch arch ~}}
+  {{~#case "x64"~}}amd64{{~/case~}}
+  {{~#default~}}{{~arch~}}{{~/default~}}
+  {{~/switch~}}
+    `;
+    const assetTemplates = parseAssets(rawAssets);
+
+    expect(assetTemplates).toHaveLength(1);
+    const template = assetTemplates[0];
+
+    expect(
+      templateAsset(template, { ...context, platform: "win32", arch: "x64" }),
+    ).toEqual("cargo-*windows_amd64");
+  });
 });

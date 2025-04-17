@@ -1,7 +1,6 @@
 import * as core from "@actions/core";
 import { Release, Repo } from "action-get-release";
 import { getPlatform, getArchitecture } from "action-get-release/platform";
-import * as util from "node:util";
 import { parseAssets, templateAsset, TemplateContext } from "./assets.js";
 import { minimatch } from "minimatch";
 
@@ -37,7 +36,7 @@ async function downloadAsset({
     );
   }
 
-  core.debug(
+  core.info(
     `found ${
       release.assets().length
     } assets for ${version} release of ${repo.fullName()}`,
@@ -58,16 +57,16 @@ async function downloadAsset({
     platform: getPlatform(),
   };
 
-  core.debug(`asset[template]=${assetTemplate}`);
+  core.info(`asset[template]=${assetTemplate}`);
 
   const assetPattern = templateAsset(assetTemplate, context);
-  core.debug(`asset[pattern]=${assetPattern}`);
+  core.info(`asset[pattern]=${assetPattern}`);
 
   const assets = release
     .assets()
     .filter((asset) => minimatch(assetPattern, asset.name()));
   for (const asset of assets) {
-    core.debug(`asset[match]=${asset.name()}`);
+    core.info(`asset[match]=${asset.name()}`);
   }
 
   const availableAssetList = release
@@ -105,12 +104,11 @@ async function run(): Promise<void> {
     version: core.getInput("version"),
     githubApiUrl: core.getInput("github-api-url"),
   } as const;
-  console.log(util.inspect(config));
 
   const repo = new Repo({ repo: config.repo, token: config.token });
 
-  core.debug(`repo = ${repo.fullName()}`);
-  core.debug(`version = ${config.version}`);
+  core.info(`repo = ${repo.fullName()}`);
+  core.info(`version = ${config.version}`);
 
   const assets = parseAssets(config.assets);
   await Promise.all([
