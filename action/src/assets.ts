@@ -1,6 +1,8 @@
+import * as core from "@actions/core";
 import * as yaml from "yaml";
 import Handlebars, { HelperOptions } from "handlebars";
 import { Architecture, Platform } from "action-get-release/platform";
+import { minimatch } from "minimatch";
 
 interface SwitchHelperContext {
   _switch_value_?: unknown;
@@ -80,7 +82,6 @@ Handlebars.registerHelper("trim", function (_input: unknown): string {
 
 export function parseAssets(rawAssets: string): string[] {
   const yamlAssets = yaml.parse(rawAssets);
-  console.log(yamlAssets);
   if (Array.isArray(yamlAssets)) {
     return yamlAssets;
   } else if (typeof yamlAssets === "string") {
@@ -112,4 +113,15 @@ export function templateAsset(
 ): string {
   const template = Handlebars.compile(assetTemplate);
   return template(context).trim();
+}
+
+export function matchAssets<A extends { name: () => string }>(
+  assets: A[],
+  pattern: string,
+): A[] {
+  return assets.filter((asset) => {
+    const matches = minimatch(asset.name(), pattern);
+    core.debug(`"${pattern}" matches "${asset.name()}" = ${matches}`);
+    return matches;
+  });
 }

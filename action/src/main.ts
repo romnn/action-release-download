@@ -1,8 +1,12 @@
 import * as core from "@actions/core";
-import { Release, Repo } from "action-get-release";
+import { Asset, Release, Repo } from "action-get-release";
 import { getPlatform, getArchitecture } from "action-get-release/platform";
-import { parseAssets, templateAsset, TemplateContext } from "./assets.js";
-import { minimatch } from "minimatch";
+import {
+  matchAssets,
+  parseAssets,
+  templateAsset,
+  TemplateContext,
+} from "./assets.js";
 
 async function download(release: Release, asset: string) {
   let downloaded: string;
@@ -13,6 +17,10 @@ async function download(release: Release, asset: string) {
   }
 
   core.addPath(downloaded);
+}
+
+function list(assets: Asset[]): string {
+  return assets.map((asset) => ` - ${asset.name()}`).join("\n");
 }
 
 async function downloadAsset({
@@ -36,11 +44,7 @@ async function downloadAsset({
     );
   }
 
-  const availableAssetList = release
-    .assets()
-    .map((asset) => ` - ${asset.name()}`)
-    .join("\n");
-
+  const availableAssetList = list(release.assets());
   core.info(
     `found ${
       release.assets().length
@@ -67,18 +71,17 @@ async function downloadAsset({
     platform: getPlatform(),
   };
 
-  core.info(`asset[template]=${assetTemplate}`);
+  core.debug(`asset[template]=${assetTemplate}`);
 
   const assetPattern = templateAsset(assetTemplate, context);
-  core.info(`asset[pattern]=${assetPattern}`);
+  core.debug(`asset[pattern]=${assetPattern}`);
 
-  const assets = release
-    .assets()
-    .filter((asset) => minimatch(assetPattern, asset.name()));
+  const assets = matchAssets(release.assets(), assetPattern);
   for (const asset of assets) {
-    core.info(`asset[match]=${asset.name()}`);
+    core.debug(`asset[match]=${asset.name()}`);
   }
 
+  const matchingAssetList = list(assets);
   const errorContext = `
 Template:
 ${assetTemplate}
@@ -88,12 +91,14 @@ ${assetPattern}
 
 Available assets in release ${context.release.tag} (${context.release.id}):
 ${availableAssetList}
+
+Matching assets in release ${context.release.tag} (${context.release.id}):
+${matchingAssetList}
 `;
 
   if (assets.length < 1) {
     core.error(`did not match any release asset.\n${errorContext}`);
-    return;
-    // throw new Error(`did not match any release asset.\n${errorContext}`);
+    throw new Error(`did not match any release asset`);
   }
 
   if (assets.length > 1) {
@@ -114,8 +119,8 @@ async function run(): Promise<void> {
 
   const repo = new Repo({ repo: config.repo, token: config.token });
 
-  core.info(`repo = ${repo.fullName()}`);
-  core.info(`version = ${config.version}`);
+  core.debug(`repo = ${repo.fullName()}`);
+  core.debug(`version = ${config.version}`);
 
   const assets = parseAssets(config.assets);
   await Promise.all([
@@ -126,6 +131,6 @@ async function run(): Promise<void> {
 }
 
 run().catch((error) => {
-  console.log(error);
+  console.error(error);
   core.setFailed(error.message);
 });

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { parseAssets, templateAsset } from "action-get-release-action/assets";
+import {
+  matchAssets,
+  parseAssets,
+  templateAsset,
+} from "action-get-release-action/assets";
 
 describe("assets", () => {
   it("can be plain strings", async () => {
@@ -97,5 +101,45 @@ _
     expect(
       templateAsset(template, { ...context, platform: "win32", arch: "x64" }),
     ).toEqual("cargo-*windows_amd64");
+  });
+});
+
+class MockAsset {
+  _name: string;
+
+  constructor(name: string) {
+    this._name = name;
+  }
+
+  name(): string {
+    return this._name;
+  }
+}
+
+describe("assets", () => {
+  const assets = [
+    "cargo-fc_0.0.38_darwin_amd64.tar.gz",
+    "cargo-fc_0.0.38_darwin_arm64.tar.gz",
+    "cargo-fc_0.0.38_linux_amd64.tar.gz",
+    "cargo-fc_0.0.38_linux_arm64.tar.gz",
+    "cargo-fc_0.0.38_windows_amd64.zip",
+    "cargo-feature-combinations_0.0.38_darwin_amd64.tar.gz",
+    "cargo-feature-combinations_0.0.38_darwin_arm64.tar.gz",
+    "cargo-feature-combinations_0.0.38_linux_amd64.tar.gz",
+    "cargo-feature-combinations_0.0.38_linux_arm64.tar.gz",
+    "cargo-feature-combinations_0.0.38_windows_amd64.zip",
+    "checksums.txt",
+  ].map((asset) => new MockAsset(asset));
+
+  it("are matched using wildcards", async () => {
+    expect(matchAssets(assets, "*cargo-*linux_amd64*")).toEqual([
+      new MockAsset("cargo-fc_0.0.38_linux_amd64.tar.gz"),
+      new MockAsset("cargo-feature-combinations_0.0.38_linux_amd64.tar.gz"),
+    ]);
+  });
+
+  //
+  it("are not matched when not a full match", async () => {
+    expect(matchAssets(assets, "cargo-*linux_amd64")).toEqual([]);
   });
 });

@@ -6,9 +6,6 @@ import { promises as fs } from "fs";
 
 import * as path from "path";
 
-export type Architecture = typeof process.arch;
-export type Platform = typeof process.platform;
-
 type GitHubRelease =
   Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"];
 
@@ -84,7 +81,6 @@ export class Release {
   }
 
   assets(): Asset[] {
-    // console.log(this.release.data.assets);
     return this.release.data.assets.map((asset) => {
       return new Asset({ release: this, asset });
     });
@@ -225,7 +221,6 @@ export class Repo {
       "GET /repos/{owner}/{repo}/releases/tags/{tag}",
       { tag, ...this.repo },
     );
-    // console.log(release);
     return new Release({ repo: this, release });
   }
 
@@ -234,7 +229,6 @@ export class Repo {
       "GET /repos/{owner}/{repo}/releases/latest",
       { ...this.repo },
     );
-    // console.log(release);
     return new Release({ repo: this, release });
   }
 }
