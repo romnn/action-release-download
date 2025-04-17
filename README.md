@@ -73,4 +73,16 @@ npm publish --dry-run # dry run publishing to NPM
 // "typescript": "^5.8.3",
 // "typescript-eslint": "^8.30.1",
 // "vitest": "^3.1.1"
+
+"exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./platform": {
+      "types": "./dist/platform.d.ts",
+      "default": "./dist/platform.js"
+    }
+  },
+
 ```
