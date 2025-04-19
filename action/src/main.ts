@@ -19,43 +19,19 @@ async function download(release: Release, asset: string) {
   core.addPath(downloaded);
 }
 
-function list(assets: Asset[]): string {
+function bulletPointList(assets: Asset[]): string {
   return assets.map((asset) => ` - ${asset.name()}`).join("\n");
 }
 
-async function downloadAsset({
+function resolveAssets({
   repo,
+  release,
   assetTemplate,
-  version,
 }: {
   repo: Repo;
+  release: Release;
   assetTemplate: string;
-  version: string;
-}): Promise<void> {
-  let release: Release;
-  try {
-    release =
-      version === "" || version === "latest"
-        ? await repo.getLatestRelease()
-        : await repo.getReleaseByTag(version);
-  } catch (err: unknown) {
-    throw new Error(
-      `failed to fetch ${version} release for ${repo.fullName()}: ${err}`,
-    );
-  }
-
-  const availableAssetList = list(release.assets());
-  core.info(
-    `found ${
-      release.assets().length
-    } assets for ${version} release of ${repo.fullName()}`,
-  );
-  core.debug(
-    `found ${
-      release.assets().length
-    } assets for ${version} release of ${repo.fullName()}:\n${availableAssetList}`,
-  );
-
+}): { matched: Asset[]; pattern: string } {
   // template the asset name
   const context: TemplateContext = {
     release: {
@@ -81,31 +57,7 @@ async function downloadAsset({
     core.debug(`asset[match]=${asset.name()}`);
   }
 
-  const matchingAssetList = list(assets);
-  const errorContext = `
-Template:
-${assetTemplate}
-
-Pattern:
-${assetPattern}
-
-Available assets in release ${context.release.tag} (${context.release.id}):
-${availableAssetList}
-
-Matching assets in release ${context.release.tag} (${context.release.id}):
-${matchingAssetList}
-`;
-
-  if (assets.length < 1) {
-    core.error(`did not match any release asset.\n${errorContext}`);
-    throw new Error(`did not match any release asset`);
-  }
-
-  if (assets.length > 1) {
-    core.warning(`matched more than one release asset.\n${errorContext}`);
-  }
-
-  await Promise.all(assets.map((asset) => download(release, asset.name())));
+  return { matched: assets, pattern: assetPattern };
 }
 
 async function run(): Promise<void> {
@@ -115,6 +67,9 @@ async function run(): Promise<void> {
     token: core.getInput("token"),
     version: core.getInput("version"),
     githubApiUrl: core.getInput("github-api-url"),
+    expectedMatchingAssetCount: parseInt(
+      core.getInput("expected-matching-asset-count"),
+    ),
   } as const;
 
   const repo = new Repo({ repo: config.repo, token: config.token });
@@ -122,15 +77,79 @@ async function run(): Promise<void> {
   core.debug(`repo = ${repo.fullName()}`);
   core.debug(`version = ${config.version}`);
 
-  const assets = parseAssets(config.assets);
-  await Promise.all([
-    assets.map((asset) =>
-      downloadAsset({ assetTemplate: asset, repo, version: config.version }),
-    ),
-  ]);
+  let release: Release;
+  try {
+    release =
+      config.version === "" || config.version === "latest"
+        ? await repo.getLatestRelease()
+        : await repo.getReleaseByTag(config.version);
+  } catch (err: unknown) {
+    throw new Error(
+      `failed to fetch ${config.version} release for ${repo.fullName()}: ${err}`,
+    );
+  }
+
+  const assets = release.assets();
+
+  core.info(`
+Found ${assets.length} assets in release ${release.tag} (${release.id}):
+${bulletPointList(assets)}
+    `);
+
+  const assetTemplates = parseAssets(config.assets);
+  const resolvedAssets = assetTemplates.flatMap((assetTemplate) => {
+    const { matched, pattern } = resolveAssets({
+      assetTemplate,
+      repo,
+      release,
+    });
+    if (config.expectedMatchingAssetCount > 0 && matched.length < 1) {
+      core.warning(`${pattern} did not match any release asset
+Template:
+${assetTemplate}
+
+Pattern:
+${pattern}
+  `);
+    }
+    return matched;
+  });
+
+  const uniqueAssets = resolvedAssets.filter(
+    (value, index, self) =>
+      index === self.findIndex((t) => t.downloadUrl === value.downloadUrl),
+  );
+
+  if (config.expectedMatchingAssetCount > 0 && uniqueAssets.length < 1) {
+    throw new Error(`did not match any release asset`);
+  }
+
+  if (config.expectedMatchingAssetCount != uniqueAssets.length) {
+    core.warning(
+      `expected to match ${config.expectedMatchingAssetCount} release assets, but matched ${uniqueAssets.length}:
+
+Matching assets in release ${release.tag} (${release.id}):
+${bulletPointList(uniqueAssets)}
+`,
+    );
+  }
+
+  await Promise.all(
+    uniqueAssets.map((asset) => download(release, asset.name())),
+  );
 }
 
-run().catch((error) => {
-  console.error(error);
-  core.setFailed(error.message);
-});
+async function main() {
+  try {
+    await run();
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      core.setFailed(error.message);
+    } else {
+      core.error(`${error}`);
+      core.setFailed("");
+    }
+  }
+}
+
+main();

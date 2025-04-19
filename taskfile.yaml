@@ -7,7 +7,7 @@ includes:
       PACKAGE: "action-get-release"
 
   action:
-    taskfile: "./tasks/node-lib.yaml"
+    taskfile: "./tasks/node.yaml"
     vars:
       PACKAGE: "action-get-release-action"
 tasks:
@@ -51,5 +51,3 @@ tasks:
     desc: "lint github actions"
     cmds:
       - actionlint
-
-  

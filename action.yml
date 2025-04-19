@@ -8,10 +8,13 @@ inputs:
   assets:
     description: "An single asset name, glob pattern, or template, or stringified YAML sequence"
     required: true
+  # expected-num-assets-matched:
+  expected-matching-asset-count:
+    description: "Number of assets expected to be matched by all asset patterns. A warning is thrown if an unexpected number of assets is matched"
+    default: "1"
+    required: false
   repo:
     description: "GitHub repository to download from"
-    # default: "${{github.action_repository}}"
-    # default: "${{ github.event.repository.name }}"
     default: "${{ github.repository }}"
   version:
     description: "Release version to install"
@@ -30,7 +33,7 @@ outputs:
   release_name:
     description: "The release name / title"
   downloaded_files:
-    description: "The array of downloaded files, useful when using wildcard '*' to download multiple files."
+    description: "The array of downloaded files, useful when using wildcard '*' to download multiple files"
 runs:
   using: node20
   main: action/dist/index.js

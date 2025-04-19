@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+includes:
+  lib:
+    taskfile: "./node-lib.yaml"
+    flatten: true
+    vars:
+      PACKAGE: "{{.PACKAGE}}"
+tasks:
+  run:
+    desc: "run {{.PACKAGE}}"
+    requires:
+      vars: [PACKAGE]
+    cmds:
+      - turbo run run --color --filter={{.PACKAGE}} {{.CLI_ARGS}}

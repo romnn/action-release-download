@@ -21,6 +21,14 @@
       ],
       "outputs": []
     },
+    "run": {
+      "persistent": true,
+      "cache": false,
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": []
+    },
     "test": {
       "dependsOn": [
         "^build"
