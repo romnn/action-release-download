@@ -51,3 +51,8 @@ tasks:
     desc: "lint github actions"
     cmds:
       - actionlint
+
+  packlist:
+    desc: "check what is included in the NPM package"
+    cmds:
+      - npx npm-packlist

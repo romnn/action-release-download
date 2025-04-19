@@ -28,3 +28,10 @@ tasks:
       vars: [PACKAGE]
     cmds:
       - turbo run build --filter "{{.PACKAGE}}"
+
+  publish:dry-run:
+    desc: "publish {{.PACKAGE}} (dry-run)"
+    requires:
+      vars: [PACKAGE]
+    cmds:
+      - npm publish --dry-run
