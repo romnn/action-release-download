@@ -92,7 +92,7 @@ async function run(): Promise<void> {
   const assets = release.assets();
 
   core.info(`
-Found ${assets.length} assets in release ${release.tag} (${release.id}):
+Found ${assets.length} assets in release ${release.tag()} (${release.id()}):
 ${bulletPointList(assets)}
     `);
 
