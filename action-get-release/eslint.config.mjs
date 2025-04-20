@@ -10,7 +10,18 @@ export default [
   {
     files: ["src/**/*.{js,mjs,cjs,ts}"],
   },
-  { languageOptions: { globals: globals.node } },
   pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  {
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: {
+        projectService: {
+          // allow to be linted without a matching tsconfig.json entry
+          allowDefaultProject: ["eslint.config.mjs"],
+        },
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
 ];

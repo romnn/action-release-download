@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { parseGithubRepo } from "action-get-release";
 
 describe("github", () => {
-  it("repositories can be parsed", async () => {
+  it("repositories can be parsed", () => {
     expect(parseGithubRepo("  https://github.com/some-user/some-repo")).toEqual(
       { repo: "some-repo", owner: "some-user" },
     );

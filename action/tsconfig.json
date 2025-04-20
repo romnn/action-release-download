@@ -5,6 +5,9 @@
     "noEmit": true
   },
   "include": [
-    "src/"
+    "src/**/*.ts",
+    "tests/**/*.ts",
+    "eslint.config.mjs",
+    "vitest.config.ts"
   ]
 }

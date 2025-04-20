@@ -6,12 +6,12 @@ import {
 } from "action-get-release-action/assets";
 
 describe("assets", () => {
-  it("can be plain strings", async () => {
+  it("can be plain strings", () => {
     expect(parseAssets("  some-user-value_0.23.zip")).toEqual([
       "some-user-value_0.23.zip",
     ]);
   });
-  it("can be stringified YAML sequences", async () => {
+  it("can be stringified YAML sequences", () => {
     expect(
       parseAssets(`
  - some-user-value_0.23-windows.zip
@@ -38,7 +38,7 @@ describe("assets", () => {
       fullName: "romnn/test-repo",
     },
   } as const;
-  it("can be templated using switch expressions", async () => {
+  it("can be templated using switch expressions", () => {
     const template = `
 cargo-fc_{{~ stripPrefix (trim release.tag) "v" ~}}_
 {{~#switch platform ~}}
@@ -79,7 +79,7 @@ _
     ).toEqual("cargo-fc_12.3_linux_arm64.tar.gz");
   });
 
-  it("can be templated using switch expressions and wildcards", async () => {
+  it("can be templated using switch expressions and wildcards", () => {
     const rawAssets = `
 - >-
   cargo-*
@@ -92,8 +92,8 @@ _
   {{~#case "x64"~}}amd64{{~/case~}}
   {{~#default~}}{{~arch~}}{{~/default~}}
   {{~/switch~}}
-    `;
-    const assetTemplates = parseAssets(rawAssets);
+    `,
+      assetTemplates = parseAssets(rawAssets);
 
     expect(assetTemplates).toHaveLength(1);
     const template = assetTemplates[0];
@@ -131,7 +131,7 @@ describe("assets", () => {
     "checksums.txt",
   ].map((asset) => new MockAsset(asset));
 
-  it("are matched using wildcards", async () => {
+  it("are matched using wildcards", () => {
     expect(matchAssets(assets, "*cargo-*linux_amd64*")).toEqual([
       new MockAsset("cargo-fc_0.0.38_linux_amd64.tar.gz"),
       new MockAsset("cargo-feature-combinations_0.0.38_linux_amd64.tar.gz"),
@@ -139,7 +139,7 @@ describe("assets", () => {
   });
 
   //
-  it("are not matched when not a full match", async () => {
+  it("are not matched when not a full match", () => {
     expect(matchAssets(assets, "cargo-*linux_amd64")).toEqual([]);
   });
 });

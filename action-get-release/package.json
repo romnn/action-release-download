@@ -6,7 +6,7 @@
   "license": "MIT",
   "description": "Download and cache github action release binaries",
   "scripts": {
-    "build": "rimraf ./dist/ && tsc",
+    "build": "rimraf ./dist/ && tsc -p tsconfig.build.json",
     "check": "tsc --noEmit",
     "lint": "eslint --config eslint.config.mjs",
     "lint:fix": "eslint --config eslint.config.mjs --fix",

@@ -20,4 +20,3 @@ npm install action-get-release
 ```ts
 // TODO
 ```
-
