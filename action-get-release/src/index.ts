@@ -2,9 +2,8 @@ import * as core from "@actions/core";
 import * as tc from "@actions/tool-cache";
 import { Octokit } from "@octokit/core";
 import { Endpoints } from "@octokit/types";
-import { promises as fs } from "fs";
-
 import * as path from "path";
+import { dirExists, stripExtension } from "./utils.js";
 
 type GitHubRelease =
   Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"];
@@ -27,11 +26,6 @@ export function parseGithubRepo(repo: string): GitHubRepositoryName {
   if (!match || match.length < 4)
     throw new Error(`failed to parse github repository ${repo}`);
   return { owner: match[1], repo: match[3] };
-}
-
-async function dirExists(path: string): Promise<boolean> {
-  const stat = await fs.lstat(path);
-  return stat.isDirectory();
 }
 
 export class Asset {
@@ -109,16 +103,17 @@ export class Release {
       const ext = path.extname(asset.name());
       core.debug(`unarchiving ${downloaded} based on file extension ${ext}`);
 
+      const unarchiveDest = stripExtension(path.join(dest, asset.name()));
       switch (ext) {
         case ".pkg":
-          return await tc.extractXar(downloaded, dest);
+          return await tc.extractXar(downloaded, unarchiveDest);
         case ".zip":
-          return await tc.extractZip(downloaded, dest);
+          return await tc.extractZip(downloaded, unarchiveDest);
         case ".tar":
         case ".gz":
-          return await tc.extractTar(downloaded, dest);
+          return await tc.extractTar(downloaded, unarchiveDest);
         case ".7z":
-          return await tc.extract7z(downloaded, dest);
+          return await tc.extract7z(downloaded, unarchiveDest);
         default:
       }
     }

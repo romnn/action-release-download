@@ -9,7 +9,12 @@ on:
 
 jobs:
   test-action:
-    runs-on: ubuntu-24.04
+    name: test action (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, ubuntu-24.04, windows-2025]
     steps:
       - uses: actions/checkout@v4
       - uses: arduino/setup-task@v2
@@ -22,19 +27,26 @@ jobs:
       - run: npm install -g turbo
       - run: task action:build
 
-      - name: Pass single asset
-        continue-on-error: true
+      - name: Test cargo feature combinations
         uses: ./
         with:
-          assets: test1.zip
-
-      - name: Pass multiple assets as YAML string
-        continue-on-error: true
-        uses: ./
-        with:
+          version: "v0.0.39"
+          repo: romnn/cargo-feature-combinations
+          expected-matching-asset-count: 2
+          # prettier-ignore
           assets: |
-            - test1.zip
-            - test2.zip
+            - >-
+              *cargo-*
+              {{~#switch platform ~}}
+                {{~#case "win32"~}}windows{{~/case~}}
+                {{~#default~}}{{~platform~}}{{~/default~}}
+              {{~/switch~}}
+              _
+              {{~#switch arch ~}}
+              {{~#case "x64"~}}amd64{{~/case~}}
+              {{~#default~}}{{~arch~}}{{~/default~}}
+              {{~/switch~}}
+              *
 
   test:
     runs-on: ubuntu-24.04
