@@ -60,15 +60,15 @@ function resolveAssets({
 
 async function run(): Promise<void> {
   const config = {
-    repo: core.getInput("repo"),
-    assets: core.getInput("assets"),
-    token: core.getInput("token"),
-    version: core.getInput("version"),
-    githubApiUrl: core.getInput("github-api-url"),
-    expectedMatchingAssetCount: parseInt(
-      core.getInput("expected-matching-asset-count"),
-    ),
-  } as const,
+      repo: core.getInput("repo"),
+      assets: core.getInput("assets"),
+      token: core.getInput("token"),
+      version: core.getInput("version"),
+      githubApiUrl: core.getInput("github-api-url"),
+      expectedMatchingAssetCount: parseInt(
+        core.getInput("expected-matching-asset-count"),
+      ),
+    } as const,
     repo = new Repo({ repo: config.repo, token: config.token });
 
   core.debug(`repo = ${repo.fullName()}`);

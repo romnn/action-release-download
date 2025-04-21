@@ -15,7 +15,7 @@ interface SwitchHelperContext {
 // In your setup code
 Handlebars.registerHelper(
   "switch",
-  function(
+  function (
     this: SwitchHelperContext,
     value: unknown,
     options: HelperOptions,
@@ -33,7 +33,7 @@ Handlebars.registerHelper(
 
 Handlebars.registerHelper(
   "case",
-  function(
+  function (
     this: SwitchHelperContext,
     value: unknown,
     options: HelperOptions,
@@ -49,7 +49,7 @@ Handlebars.registerHelper(
 
 Handlebars.registerHelper(
   "default",
-  function(
+  function (
     this: SwitchHelperContext,
     options: HelperOptions,
   ): string | undefined {

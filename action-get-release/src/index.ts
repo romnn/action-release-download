@@ -56,6 +56,15 @@ export class Asset {
   }
 }
 
+function ensureCacheToolKey(key?: string): string {
+  if (!key || key === "") {
+    throw new Error(
+      `cannot determine key for the cache. The GITHUB_ACTION_REPOSITORY env variable is not defined and cacheToolKey is not set.`,
+    );
+  }
+  return key;
+}
+
 export class Release {
   public release: GitHubRelease;
   public repo: Repo;
@@ -134,19 +143,15 @@ export class Release {
       unarchive?: boolean;
     } = {},
   ): Promise<string> {
+    const useCache = cache ?? true;
+
     if (!cacheToolKey || cacheToolKey === "") {
       cacheToolKey = ACTION_REPO;
-    }
-    if (!cacheToolKey || cacheToolKey === "") {
-      throw new Error(
-        `cannot determine key for the cache. The GITHUB_ACTION_REPOSITORY env variable is not defined and cacheToolKey is not set.`,
-      );
     }
 
     core.info(`downloading asset ${name}`);
 
     const releaseKey = this.id();
-    const useCache = cache ?? true;
 
     const asset = this.assets().find((asset) => asset.name() === name);
     if (!asset) {
@@ -159,14 +164,18 @@ export class Release {
     const assetKey = asset.id();
     let downloaded: string | undefined = undefined;
     if (useCache) {
-      downloaded = tc.find(cacheToolKey, releaseKey, assetKey);
+      downloaded = tc.find(
+        ensureCacheToolKey(cacheToolKey),
+        releaseKey,
+        assetKey,
+      );
     }
     if (!downloaded) {
       downloaded = await this.download(asset, { dest, unarchive });
       if (useCache) {
         downloaded = await tc.cacheDir(
           downloaded,
-          cacheToolKey,
+          ensureCacheToolKey(cacheToolKey),
           releaseKey,
           assetKey,
         );
