@@ -20,7 +20,7 @@
   "main": "./src/index.js",
   "module": "./src/index.js",
   "dependencies": {
-    "@actions/tool-cache": "^2.0.2"
+    "@actions/tool-cache": "^4.0.0"
   },
   "devDependencies": {}
 }

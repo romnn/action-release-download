@@ -1,27 +1,19 @@
 import globals from "globals";
-import pluginJs from "@eslint/js";
+import js from "@eslint/js";
 import tseslint from "typescript-eslint";
+import { defineConfig, globalIgnores } from "eslint/config";
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
-  {
-    ignores: ["dist/**/*"],
-  },
+export default defineConfig([
+  globalIgnores(["dist/**/*"]),
   {
     files: ["src/**/*.{js,mjs,cjs,ts}"],
-  },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
-  {
+    extends: [js.configs.recommended, tseslint.configs.recommendedTypeChecked],
     languageOptions: {
       globals: globals.node,
       parserOptions: {
-        projectService: {
-          // allow to be linted without a matching tsconfig.json entry
-          allowDefaultProject: ["eslint.config.mjs"],
-        },
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
   },
-];
+]);

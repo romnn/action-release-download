@@ -13,7 +13,7 @@ export function errorMessage(err: unknown): string {
     return err.message;
   }
   if (typeof err === "object" && err !== null && "message" in err) {
-    return String((err as { message: unknown }).message);
+    return String(err.message);
   }
   // fallback to a plain string conversion
   return String(err);

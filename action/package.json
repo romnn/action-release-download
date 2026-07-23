@@ -17,13 +17,13 @@
     "./assets": "./src/assets.ts"
   },
   "dependencies": {
-    "@octokit/core": "^6.1.5",
-    "action-get-release": "*",
-    "handlebars": "^4.7.8",
-    "minimatch": "^10.0.1",
-    "yaml": "^2.7.1"
+    "@octokit/core": "^7.0.6",
+    "action-get-release": "^0.0.15",
+    "handlebars": "^4.7.9",
+    "minimatch": "^10.2.5",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.38.3"
+    "@vercel/ncc": "^0.44.1"
   }
 }

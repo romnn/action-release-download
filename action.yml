@@ -35,5 +35,5 @@ outputs:
   downloaded_files:
     description: "The array of downloaded files, useful when using wildcard '*' to download multiple files"
 runs:
-  using: node20
+  using: node24
   main: action/dist/index.js

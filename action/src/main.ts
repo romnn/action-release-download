@@ -11,7 +11,9 @@ async function download(release: Release, asset: string) {
   try {
     downloaded = await release.downloadAsset(asset, { cache: false });
   } catch (err: unknown) {
-    throw new Error(`failed to download asset ${asset}: ${errorMessage(err)}`);
+    throw new Error(`failed to download asset ${asset}: ${errorMessage(err)}`, {
+      cause: err,
+    });
   }
 
   core.addPath(downloaded);
@@ -83,6 +85,7 @@ async function run(): Promise<void> {
   } catch (err: unknown) {
     throw new Error(
       `failed to fetch ${config.version} release for ${repo.fullName()}: ${errorMessage(err)}`,
+      { cause: err },
     );
   }
 
