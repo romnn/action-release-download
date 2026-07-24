@@ -13,7 +13,7 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "test": "turbo run test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{js,mjs,cjs,ts,tsx,md}\""
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
