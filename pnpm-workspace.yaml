@@ -1,0 +1,4 @@
+minimumReleaseAge: 20160
+packages:
+  - action-get-release
+  - action

@@ -12,4 +12,4 @@ tasks:
     requires:
       vars: [PACKAGE]
     cmds:
-      - turbo run run --color --filter={{.PACKAGE}} {{.CLI_ARGS}}
+      - pnpm exec turbo run run --color --filter={{.PACKAGE}} {{.CLI_ARGS}}

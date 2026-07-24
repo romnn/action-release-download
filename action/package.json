@@ -1,6 +1,7 @@
 {
   "name": "action-get-release-action",
   "version": "0.0.1",
+  "private": true,
   "type": "module",
   "author": "romnn <contact@romnn.com>",
   "license": "MIT",
@@ -17,13 +18,14 @@
     "./assets": "./src/assets.ts"
   },
   "dependencies": {
-    "@octokit/core": "^7.0.6",
-    "action-get-release": "^0.0.15",
+    "@actions/core": "^3.0.1",
+    "action-get-release": "workspace:*",
     "handlebars": "^4.7.9",
     "minimatch": "^10.2.5",
     "yaml": "^2.9.0"
   },
   "devDependencies": {
+    "@types/node": ">=24 <25",
     "@vercel/ncc": "^0.44.1"
   }
 }

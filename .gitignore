@@ -1,4 +1,5 @@
 .DS_Store
+.cooldown.lock
 .turbo/
 node_modules/
 deprecated/
