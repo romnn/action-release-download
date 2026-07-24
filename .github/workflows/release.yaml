@@ -35,7 +35,9 @@ jobs:
           --no-git-tag-version ${{ steps.query.outputs.semver_version }}
       - run: task install
       - run: task build
-      - run: pnpm --filter action-get-release publish --no-git-checks --access public
+      - name: publish to npm
+        run: |
+          printf '//registry.npmjs.org/:_authToken=%s\n' "${NPM_TOKEN}" >> "${HOME}/.npmrc"
+          pnpm --filter action-get-release publish --no-git-checks --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
