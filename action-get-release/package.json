@@ -5,6 +5,11 @@
   "author": "romnn <contact@romnn.com>",
   "license": "MIT",
   "description": "Download and cache github action release binaries",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/romnn/action-release-download.git",
+    "directory": "action-get-release"
+  },
   "scripts": {
     "build": "rimraf ./dist/ && tsc -p tsconfig.build.json",
     "check": "tsc --noEmit",
