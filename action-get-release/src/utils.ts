@@ -7,7 +7,10 @@ export async function dirExists(path: string): Promise<boolean> {
 }
 
 export function stripExtension(filePath: string): string {
-  const dir = path.dirname(filePath);
-  const base = path.basename(filePath, path.extname(filePath));
-  return path.join(dir, base);
+  // Only remove the extension; keep the path verbatim. Recomposing via
+  // path.join/path.format would normalize separators (e.g. "/" -> "\" on
+  // Windows), so slice it off the original string instead. path.extname
+  // handles the edge cases (dotfiles, multi-dot names, no extension).
+  const ext = path.extname(filePath);
+  return filePath.slice(0, filePath.length - ext.length);
 }
