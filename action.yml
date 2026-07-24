@@ -6,7 +6,7 @@ branding:
   color: orange
 inputs:
   assets:
-    description: "An single asset name, glob pattern, or template, or stringified YAML sequence"
+    description: "A single asset name, glob pattern, template, or stringified YAML sequence"
     required: true
   # expected-num-assets-matched:
   expected-matching-asset-count:
@@ -20,16 +20,16 @@ inputs:
     description: "Release version to install"
     default: "latest"
   token:
-    description: "Github API token"
+    description: "GitHub API token"
     default: "${{ github.token }}"
     required: false
   github-api-url:
-    description: "The URL of the Github API, only use this input if you are using Github Enterprise"
+    description: "The URL of the GitHub API; only use this input with GitHub Enterprise"
     default: "https://api.github.com"
     required: false
 outputs:
   tag_name:
-    description: "The github tag used to download the release"
+    description: "The GitHub tag used to download the release"
   release_name:
     description: "The release name / title"
   downloaded_files:
