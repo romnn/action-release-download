@@ -15,6 +15,37 @@ const ACTION_REPO =
   process.env.GITHUB_ACTION_REPOSITORY_OVERRIDE ??
   process.env.GITHUB_ACTION_REPOSITORY;
 
+/** How many times a release lookup is attempted before its failure is final. */
+const RELEASE_LOOKUP_ATTEMPTS = 3;
+
+/**
+ * Runs a GitHub API request, retrying a failure that a later attempt can survive.
+ *
+ * A request that got no response, such as a connect timeout to api.github.com, which Octokit
+ * reports with status 500, or one answered with a server error, is tried again after 1 s and
+ * then 2 s.
+ * Any other failure is final at once: a release that does not exist, and a rate limit, which
+ * asks the caller to wait longer than these retries do.
+ */
+async function withRetries<T>(request: () => Promise<T>): Promise<T> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await request();
+    } catch (err: unknown) {
+      if (attempt >= RELEASE_LOOKUP_ATTEMPTS || !transient(err)) throw err;
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1000 * 2 ** (attempt - 1)),
+      );
+    }
+  }
+}
+
+/** Whether a failed request may succeed when tried again. */
+function transient(err: unknown): boolean {
+  const status = (err as { status?: unknown } | null)?.status;
+  return typeof status !== "number" || status >= 500;
+}
+
 export interface GitHubRepositoryName {
   repo: string;
   owner: string;
@@ -221,17 +252,20 @@ export class Repo {
   }
 
   async getReleaseByTag(tag: string): Promise<Release> {
-    const release = await this.api.request(
-      "GET /repos/{owner}/{repo}/releases/tags/{tag}",
-      { tag, ...this.repo },
+    const release = await withRetries(() =>
+      this.api.request("GET /repos/{owner}/{repo}/releases/tags/{tag}", {
+        tag,
+        ...this.repo,
+      }),
     );
     return new Release({ repo: this, release });
   }
 
   async getLatestRelease(): Promise<Release> {
-    const release = await this.api.request(
-      "GET /repos/{owner}/{repo}/releases/latest",
-      { ...this.repo },
+    const release = await withRetries(() =>
+      this.api.request("GET /repos/{owner}/{repo}/releases/latest", {
+        ...this.repo,
+      }),
     );
     return new Release({ repo: this, release });
   }
