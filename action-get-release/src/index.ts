@@ -22,21 +22,20 @@ const RELEASE_LOOKUP_ATTEMPTS = 3;
  * Runs a GitHub API request, retrying a failure that a later attempt can survive.
  *
  * A request that got no response, such as a connect timeout to api.github.com, which Octokit
- * reports with status 500, or one answered with a server error or a rate limit, is tried again
- * after 1 s and then 2 s.
- * Any other failure, such as a release that does not exist, is final at once.
+ * reports with status 500, or one answered with a server error, is tried again after 1 s and
+ * then 2 s.
+ * Any other failure is final at once: a release that does not exist, and a rate limit, which
+ * asks the caller to wait longer than these retries do.
  */
-export async function withRetries<T>(
-  request: () => Promise<T>,
-  wait: (ms: number) => Promise<void> = (ms) =>
-    new Promise((resolve) => setTimeout(resolve, ms)),
-): Promise<T> {
+async function withRetries<T>(request: () => Promise<T>): Promise<T> {
   for (let attempt = 1; ; attempt++) {
     try {
       return await request();
     } catch (err: unknown) {
       if (attempt >= RELEASE_LOOKUP_ATTEMPTS || !transient(err)) throw err;
-      await wait(1000 * 2 ** (attempt - 1));
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1000 * 2 ** (attempt - 1)),
+      );
     }
   }
 }
@@ -44,7 +43,7 @@ export async function withRetries<T>(
 /** Whether a failed request may succeed when tried again. */
 function transient(err: unknown): boolean {
   const status = (err as { status?: unknown } | null)?.status;
-  return typeof status !== "number" || status >= 500 || status === 429;
+  return typeof status !== "number" || status >= 500;
 }
 
 export interface GitHubRepositoryName {
